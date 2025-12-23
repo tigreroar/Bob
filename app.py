@@ -6,6 +6,7 @@ import os
 # 1. Page Configuration
 st.set_page_config(page_title="Bob - Home Inspection Reviewer", layout="wide")
 st.title("🚀 Bob — Home Inspection Reviewer")
+st.caption("Powered by Agent Coach AI")
 
 # 2. Secure API Key Configuration (RAILWAY + LOCAL FIX)
 # Primero intentamos obtener la clave desde las Variables de Entorno (Railway)
@@ -251,3 +252,4 @@ if prompt := st.chat_input("Type your message to Bob..."):
         
     except Exception as e:
         st.error(f"An error occurred: {e}")
+
