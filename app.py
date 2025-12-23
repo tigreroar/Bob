@@ -1,18 +1,25 @@
 import streamlit as st
 import google.generativeai as genai
 from pypdf import PdfReader
+import os
 
 # 1. Page Configuration
 st.set_page_config(page_title="Bob - Home Inspection Reviewer", layout="wide")
 st.title("🚀 Bob — Home Inspection Reviewer")
 
-# 2. Secure API Key Configuration
-try:
-    api_key = st.secrets["GEMINI_API_KEY"]
-    genai.configure(api_key=api_key)
-except Exception as e:
-    st.error("⚠️ Error: API Key not found in Streamlit secrets.")
-    st.stop()
+# 2. Secure API Key Configuration (RAILWAY + LOCAL FIX)
+# Primero intentamos obtener la clave desde las Variables de Entorno (Railway)
+api_key = os.getenv("GEMINI_API_KEY")
+
+# Si no la encuentra (por ejemplo, estás en local), busca en st.secrets
+if not api_key:
+    try:
+        api_key = st.secrets["GEMINI_API_KEY"]
+    except:
+        st.error("⚠️ Error: API Key not found. En Railway, ve a Variables y añade 'GEMINI_API_KEY'.")
+        st.stop()
+
+genai.configure(api_key=api_key)
 
 # 3. Master System Instructions (FINAL OPTIMIZED VERSION)
 # NO MODIFICAR: Estas son las reglas estrictas de comportamiento para Bob.
@@ -213,8 +220,7 @@ if uploaded_files and not st.session_state.file_processed:
 # 8. Chat Interface
 # Display previous messages
 for message in st.session_state.messages:
-    # Skip displaying the raw internal prompt "PDF Uploaded..." to keep UI clean, 
-    # OR display it to show action. Let's keep it clean.
+    # Skip displaying the raw internal prompt "PDF Uploaded..." to keep UI clean
     if message["content"] != "PDF Uploaded. Start Analysis.":
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
